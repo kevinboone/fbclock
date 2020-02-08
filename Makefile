@@ -1,5 +1,5 @@
 NAME    := fbclock
-VERSION := 1.0a
+VERSION := 1.0b
 CC      :=  gcc 
 LIBS    := -lm ${EXTRA_LIBS} 
 TARGET	:= $(NAME)

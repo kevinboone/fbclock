@@ -1,6 +1,6 @@
 # fbclock 
 
-Version 1.0a
+Version 1.0b
 
 # What is this?
 
@@ -99,5 +99,14 @@ terms of the GNU Public Licence, version 3.0. Essentially that means
 you may use the software however you wish, so long as the source
 code continues to be made available, and the original author is
 acknowledged. There is no warranty of any kind.
+
+## Revision history
+
+1.0a Feb 2020<br/>
+First working release
+
+1.0b Feb 2020<br/>
+Added code to allow for framebuffers with stride != 
+width * bytes\_per\_pixel
 
 

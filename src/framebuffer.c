@@ -27,8 +27,7 @@
 #include "log.h" 
 #include "framebuffer.h" 
 
-// Bytes per pixel
-#define BPP 4
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
 struct _FrameBuffer
   {
@@ -38,6 +37,10 @@ struct _FrameBuffer
   int fb_data_size;
   BYTE *fb_data;
   char *fbdev;
+  int fb_bytes;
+  int line_length;
+  int stride;
+  int slop;
   }; 
 
 
@@ -68,32 +71,30 @@ BOOL framebuffer_init (FrameBuffer *self, char **error)
   if (self->fd >= 0)
     {
     struct fb_var_screeninfo vinfo;
+    struct fb_fix_screeninfo finfo;
 
+    ioctl (self->fd, FBIOGET_FSCREENINFO, &finfo);
     ioctl (self->fd, FBIOGET_VSCREENINFO, &vinfo);
 
     log_debug ("fb_init: xres %d", vinfo.xres); 
     log_debug ("fb_init: yres %d", vinfo.yres); 
     log_debug ("fb_init: bpp %d",  vinfo.bits_per_pixel); 
+    log_debug ("fb_init: line_length %d",  finfo.line_length); 
 
+    self->line_length = finfo.line_length; 
     self->w = vinfo.xres;
     self->h = vinfo.yres;
     int fb_bpp = vinfo.bits_per_pixel;
     int fb_bytes = fb_bpp / 8;
-    if (fb_bytes == BPP)
-      {
-      self->fb_data_size = self->w * self->h * BPP;
+    self->fb_bytes = fb_bytes;
+    self->fb_data_size = self->w * self->h * fb_bytes;
+    self->stride = max (self->line_length, self->w * self->fb_bytes);
+    self->slop = self->stride - (self->w * self->fb_bytes);
 
-      self->fb_data = mmap (0, self->fb_data_size, 
+    self->fb_data = mmap (0, self->fb_data_size, 
 	     PROT_READ | PROT_WRITE, MAP_SHARED, self->fd, (off_t)0);
 
-      ret = TRUE;
-      }
-    else
-      {
-      if (error)
-        asprintf (error, "Only 32 bpp framebuffers are supported");
-
-      }
+    ret = TRUE;
     }
   else
     {
@@ -136,7 +137,7 @@ void framebuffer_set_pixel (FrameBuffer *self, int x, int y,
   {
   if (x > 0 && x < self->w && y > 0 && y < self->h)
     {
-    int index32 = (y * self->w + x) * BPP;
+    int index32 = (y * self->w + x) * self->fb_bytes + y * self->slop;
     self->fb_data [index32++] = b;
     self->fb_data [index32++] = g;
     self->fb_data [index32++] = r;
@@ -183,7 +184,7 @@ void framebuffer_get_pixel (const FrameBuffer *self,
   {
   if (x > 0 && x < self->w && y > 0 && y < self->h)
     {
-    int index32 = (y * self->w + x) * BPP;
+    int index32 = (y * self->w + x) * self->fb_bytes + (y * self->slop);
     *b = self->fb_data [index32++];
     *g = self->fb_data [index32++];
     *r = self->fb_data [index32];
