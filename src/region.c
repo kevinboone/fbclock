@@ -124,7 +124,7 @@ Region *region_clone (const Region *other)
 void region_set_pixel (Region *self, int x, int y, 
       BYTE r, BYTE g, BYTE b)
   {
-  if (x > 0 && x < self->w && y > 0 && y < self->h)
+  if (x >= 0 && x < self->w && y >= 0 && y < self->h)
     {
     int index24 = (y * self->w + x) * BPP;
     self->data [index24++] = b;
