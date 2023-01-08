@@ -12,6 +12,7 @@
 ============================================================================*/
 
 #define _GNU_SOURCE
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -241,7 +242,7 @@ void props_put_int64 (Props *self, const char *name, int64_t value)
   LOG_IN
   log_debug ("props_put_integer: key=%s, value=%ld", name, value);
   char s[30];
-  snprintf (s, sizeof (s), "%lld", value);
+  snprintf (s, sizeof (s), "%" PRId64, value);
   props_put (self, name, s);
   LOG_OUT
   }

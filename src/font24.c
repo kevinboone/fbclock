@@ -6,7 +6,6 @@
   Based on data that is believed to be in the public domain
 
 ==========================================================================*/
-#include <stdint.h>
 #include "bitmap_font.h" 
 
 const uint8_t font24_table [] = 

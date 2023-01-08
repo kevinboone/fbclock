@@ -8,6 +8,7 @@
 ==========================================================================*/
 
 #define _GNU_SOURCE
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -237,7 +238,7 @@ char *numberformat_space_64 (int64_t n, const char *sep)
     char in[30];
     ret = malloc (40);
     ret[0] = 0;
-    sprintf (in, "%lld", n);
+    sprintf (in, "%" PRId64, n);
     int lin = strlen (in);
 
     int before = (lin % 3);
