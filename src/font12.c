@@ -5,7 +5,6 @@
   Based on data that is believed to be in the public domain
 
 ==========================================================================*/
-#include <stdint.h>
 #include "bitmap_font.h" 
 
 //  12pt

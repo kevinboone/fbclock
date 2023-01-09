@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 // Boolean
 
 #ifndef TRUE

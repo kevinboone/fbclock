@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <stdint.h>
 #include "defs.h"
 
 typedef struct _BitmapFont

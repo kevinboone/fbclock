@@ -6,7 +6,6 @@
 
 ==========================================================================*/
 
-#include <stdint.h>
 #include "bitmap_font.h" 
 
 const uint8_t font8_table[] = 
