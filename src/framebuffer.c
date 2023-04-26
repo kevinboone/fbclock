@@ -137,6 +137,8 @@ void framebuffer_set_pixel (FrameBuffer *self, int x, int y,
   if (x > 0 && x < self->w && y > 0 && y < self->h)
     {
     int index32 = (y * self->w + x) * self->fb_bytes + y * self->slop;
+    if (index32 >= self->fb_data_size)
+      return;
     self->fb_data [index32++] = b;
     self->fb_data [index32++] = g;
     self->fb_data [index32++] = r;
@@ -184,6 +186,11 @@ void framebuffer_get_pixel (const FrameBuffer *self,
   if (x > 0 && x < self->w && y > 0 && y < self->h)
     {
     int index32 = (y * self->w + x) * self->fb_bytes + (y * self->slop);
+    if (index32 >= self->fb_data_size)
+      {
+      *r = *g = *b = 0;
+      return;
+      }
     *b = self->fb_data [index32++];
     *g = self->fb_data [index32++];
     *r = self->fb_data [index32];
